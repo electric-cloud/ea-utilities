@@ -76,8 +76,8 @@ mkdir -p "$annoDir"
 mkdir -p "$historyDir"
 mkdir -p "$debugDir"
 
-# Invoke emake to do a build (assumes any arguments passed in on the command line are standard
-# makefile options (e.g. targets/variables)
+# Invoke emake to do a build; assumes any arguments passed in on the command line are standard
+# makefile options (e.g. targets/variables) or additional emake options
 emake $emakeCM \
       $emakeRoot \
       $emakeHistoryFile \
