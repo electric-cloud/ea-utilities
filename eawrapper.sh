@@ -17,13 +17,43 @@
 
 
 # Template substitutions (replace defaults with appropriate values for your environment)
-cmHost="localhost"
-projectName="myProject"
+cmHost=""
+projectName=""
+emakeOutputDir=""
 assetDir=".emake"
 emakeRoot="."
 buildClass="default"
 resourceName="default"
-emakeOutputDir="emake_outputs"
+
+# Make sure cmHost has been configured.
+
+if [ "x$cmHost" = "x" ] ; then
+    echo "'cmHost' must be set to the hostname or IP address of your "
+    echo "ElectricAccelerator Cluster Manager."
+    exit 1
+fi
+
+# Make sure projectName has been configured.
+
+if [ "x$projectName" = "x" ] ; then
+    echo "'projectName' must be set to the name of your project."
+    exit 1
+fi
+
+# Spare the user some pain by prohibiting spaces in projectName.
+
+if echo "$projectName" | grep -E '[ "]' > /dev/null ; then
+    echo "'projectName' must not contain spaces."
+    exit 1
+fi
+
+# Make sure emakeOutputDir has been configured.
+
+if [ "x$emakeOutputDir" = "x" ] ; then
+    echo "'emakeOutputDir' must be set to a writable directory with enough"
+    echo "free space for Electric Make annotation, history and debug logs."
+    exit 1
+fi
 
 # Derived paths
 annoDir="$emakeOutputDir/anno"
