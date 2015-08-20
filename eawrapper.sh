@@ -15,6 +15,9 @@
 #
 # Electric Cloud should not be held liable for any repercussions of using this software.
 
+# debug
+#set -xv
+
 
 # Template substitutions (replace defaults with appropriate values for your environment)
 cmHost=""
@@ -24,6 +27,51 @@ assetDir=".emake"
 emakeRoot="."
 buildClass="default"
 resourceName="default"
+
+progname=$0
+
+function usage () {
+   cat <<EOF
+Usage: $progname [-a file] [-b file] [-h] [-- gmake/emake options] [target ...]
+
+Options:
+   -a file post-build hook
+   -b file pre-build hook
+   -h      help
+
+If specifying a make option then it must be preceded by '--'. For example:
+$progname -a -- -f verify.mk all
+
+EOF
+   exit 0
+}
+
+# Defaults for command line options
+optPreBuildHook=0
+optPostBuildHook=0
+
+# Parse command line options
+while getopts ":a:b:h" opt; do
+   case $opt in
+
+   a) optPostBuildHook=1
+      postBuildHookFile=$OPTARG
+      ;;
+   b) optPreBuildHook=1
+      preBuildHookFile=$OPTARG
+      ;;
+   h) usage
+      exit 0
+      ;;
+  \?) echo "Invalid option: -$OPTARG"
+      exit 1
+      ;;
+   esac
+done
+
+# Everything else is make option related
+# Note: if specifying a make switch then use '--' first (e.g. ./eawrapper.sh -a -- -f verify.mk all)
+shift $(($OPTIND - 1))
 
 # Make sure cmHost has been configured.
 
@@ -106,6 +154,16 @@ mkdir -p "$annoDir"
 mkdir -p "$historyDir"
 mkdir -p "$debugDir"
 
+# Execute optional pre-build hook
+if [ $optPreBuildHook = 1 ]; then
+   if [ -x $preBuildHookFile ]; then
+      . $preBuildHookFile
+   else
+      echo "$preBuildHookFile does not exist or is not executable"
+      exit 1
+   fi
+fi
+
 # Invoke emake to do a build; assumes any arguments passed in on the command line are standard
 # makefile options (e.g. targets/variables) or additional emake options
 emake $emakeCM \
@@ -123,3 +181,13 @@ emake $emakeCM \
       $emakeParseAvoidance \
       $emakeJobcache \
       $*
+
+# Execute optional post-build hook
+if [ $optPostBuildHook = 1 ]; then
+   if [ -x $postBuildHookFile ]; then
+      . $postBuildHookFile
+   else
+      echo "$postBuildHookFile does not exist or is not executable"
+      exit 1
+   fi
+fi
