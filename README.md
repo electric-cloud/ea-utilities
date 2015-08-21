@@ -6,7 +6,7 @@ and methods to manage history/annotation files.</p>
 <p>It contains the following files:</p>
 <ul>
 <li>eawrapper.sh - wrapper script</li>
-<li>verify.mk - simple makefile to verify ElectricAccelerator environment is working properly (<code>./eawrapper.sh -f verify.mk</code>)</li>
+<li>verify.mk - simple makefile to verify ElectricAccelerator environment is working properly (<code>./eawrapper.sh -- -f verify.mk</code>)</li>
 </ul>
 
 
