@@ -1,23 +1,51 @@
 #!/bin/sh
 #
-# This script is intended to provide a starting point for wrapping ElectricAccelerator emake
-# with the necessary options to perform a customer build.
+# This script is intended to provide a starting point for wrapping
+# ElectricAccelerator emake with the necessary options to perform a customer
+# build.  Usage is:
 #
-# Note: Not all options of emake are specified in this template. For a complete list, see
-#       'emake --help' and the online documentation
+#       ./eawrapper.sh <make options> <targets>
 #
-# This module is free for use. Modify it however you see fit to better your experience using 
-# ElectricCommander. Share your enhancements and fixes.
+# All emake-specific options should be added by this script, so you need only
+# specify your normal make options and command-line arguments.
 #
-# This module is not officially supported by Electric Cloud. It has undergone no formal 
-# testing and you may run into issues that have not been uncovered in the limited manual 
-# testing done so far.
+# Note: Not all options of emake are specified in this template. For a complete
+# list, see the online documentation at http://docs.electric-cloud.com, or use
+# 
+#       emake --help
 #
-# Electric Cloud should not be held liable for any repercussions of using this software.
+# This module is free for use. Modify it however you see fit to better your
+# experience using ElectricAccelerator. Share your enhancements and fixes.
+#
+#
+# Copyright (c) 2015 Ken McKnight
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#     * Redistributions of source code must retain the above copyright notice,
+#       this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#     * Neither the name of Electric Cloud nor the names of its employees may
+#       be used to endorse or promote products derived from this software
+#       without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 
 # debug
 #set -xv
-
 
 # Template substitutions (replace defaults with appropriate values for your environment)
 cmHost=""
