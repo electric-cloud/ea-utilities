@@ -32,12 +32,13 @@ progname=$0
 
 function usage () {
    cat <<EOF
-Usage: $progname [-a file] [-b file] [-h] [-- gmake/emake options] [target ...]
+Usage: $progname [-a file] [-b file] [-hr] [-- gmake/emake options] [target ...]
 
 Options:
    -a file post-build hook
    -b file pre-build hook
    -h      help
+   -r      reset history (aka no-history build - history file backed up)
 
 If specifying a make option then it must be preceded by '--'. For example:
 $progname -a -- -f verify.mk all
@@ -49,9 +50,10 @@ EOF
 # Defaults for command line options
 optPreBuildHook=0
 optPostBuildHook=0
+optResetHistory=0
 
 # Parse command line options
-while getopts ":a:b:h" opt; do
+while getopts ":a:b:hr" opt; do
    case $opt in
 
    a) optPostBuildHook=1
@@ -62,6 +64,8 @@ while getopts ":a:b:h" opt; do
       ;;
    h) usage
       exit 0
+      ;;
+   r) optResetHistory=1
       ;;
   \?) echo "Invalid option: -$OPTARG"
       exit 1
@@ -106,12 +110,13 @@ fi
 # Derived paths
 annoDir="$emakeOutputDir/anno"
 historyDir="$emakeOutputDir/history"
+historyFile="$historyDir/${projectName}.data"
 debugDir="$emakeOutputDir/debug"
 
 # Minimum required options
 emakeCM="--emake-cm=$cmHost"
 emakeRoot="--emake-root=$emakeRoot"
-emakeHistoryFile="--emake-historyfile=$historyDir/${projectName}.data"
+emakeHistoryFile="--emake-historyfile=$historyFile"
 
 # Asset directory (default = .emake in directory where emake started)
 #emakeAssetDir="--emake-assetdir=$assetDir"
@@ -153,6 +158,12 @@ emakeAnnoDetail="--emake-annodetail=basic,history,waiting"
 mkdir -p "$annoDir"
 mkdir -p "$historyDir"
 mkdir -p "$debugDir"
+
+# Reset history (make backup of history file)
+if [ $optResetHistory = 1 ]; then
+   datestamp=`date +%Y%m%d%H%M%S`
+   mv "$historyFile" "$historyFile.$datestamp"
+fi
 
 # Execute optional pre-build hook
 if [ $optPreBuildHook = 1 ]; then
