@@ -1,5 +1,5 @@
-all: test
+all: $(addprefix test,$(shell seq 1 100))
 
-test:
-	@echo "Executing on the following host"
-	@hostname
+%:
+	@echo "Executing $@ on host `hostname`"
+	@sleep 5
