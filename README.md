@@ -5,17 +5,17 @@ and methods to manage history/annotation files.
 
 It contains the following files:
 * eawrapper.sh - wrapper script
-* verify.mk - simple makefile to verify ElectricAccelerator environment is working properly (<code>./eawrapper.sh -- -f verify.mk</code>)
-* jobcache.mk - simple makefile to verify Jobcache is working properly (<code>./eawrapper.sh -- -f jobcache.mk</code>)
+* verify.mk - simple makefile to verify ElectricAccelerator environment is working properly
+  * Example: `./eawrapper.sh -- -f verify.mk`
+* jobcache.mk - simple makefile to verify Jobcache is working properly
+  * Example: `./eawrapper.sh -- -f jobcache.mk`
 
 # Contact Authors
-<dl>
-<dt>Wrapper script</dt>
-<dd>Ken McKnight (<a href="mailto:kmcknight@electric-cloud.com">kmcknight@electric-cloud.com</a>)</dd>
-</dl>
-<dl>
-<dt>Jobcache Verification</dt>
-<dd>Alan Post (<a href="mailto:apost@electric-cloud.com">apost@electric-cloud.com</a>)</dd>
+_**Wrapper script**_
+* Ken McKnight ([kmcknight@electric-cloud.com](mailto:kmcknight@electric-cloud.com))
+
+_**Jobcache Verification**_
+* Alan Post ([apost@electric-cloud.com](mailto:apost@electric-cloud.com"))
 </dl>
 
 # Disclaimer
