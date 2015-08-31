@@ -1,17 +1,14 @@
-<h1>eawrapper</h1>
+# eawrapper
 
-<p>eawrapper provides a wrapper script to ElectricAccelerator emake with common flags 
-and methods to manage history/annotation files.</p>
+eawrapper provides a wrapper script to ElectricAccelerator emake with common flags 
+and methods to manage history/annotation files.
 
-<p>It contains the following files:</p>
-<ul>
-<li>eawrapper.sh - wrapper script</li>
-<li>verify.mk - simple makefile to verify ElectricAccelerator environment is working properly (<code>./eawrapper.sh -- -f verify.mk</code>)</li>
-<li>jobcache.mk - simple makefile to verify Jobcache is working properly (<code>./eawrapper.sh -- -f jobcache.mk</code>)</li>
-</ul>
+It contains the following files:
+* eawrapper.sh - wrapper script
+* verify.mk - simple makefile to verify ElectricAccelerator environment is working properly (<code>./eawrapper.sh -- -f verify.mk</code>)
+* jobcache.mk - simple makefile to verify Jobcache is working properly (<code>./eawrapper.sh -- -f jobcache.mk</code>)
 
-
-<h1>Contact Authors</h1> 
+# Contact Authors
 <dl>
 <dt>Wrapper script</dt>
 <dd>Ken McKnight (<a href="mailto:kmcknight@electric-cloud.com">kmcknight@electric-cloud.com</a>)</dd>
@@ -21,18 +18,14 @@ and methods to manage history/annotation files.</p>
 <dd>Alan Post (<a href="mailto:apost@electric-cloud.com">apost@electric-cloud.com</a>)</dd>
 </dl>
 
-<h1>Disclaimer</h1>
+# Disclaimer
  
-<p>This module is free for use. Modify it however you see fit to better your 
-experience using ElectricAccelerator. Share your enhancements and fixes.</p>
+This module is free for use. Modify it however you see fit to better your 
+experience using ElectricAccelerator. Share your enhancements and fixes.
 
-<p>This module is not officially supported by Electric Cloud. It has undergone no 
+This module is not officially supported by Electric Cloud. It has undergone no 
 formal testing and you may run into issues that have not been uncovered in the 
-limited manual testing done so far.</p>
+limited manual testing done so far.
 
-<p>Electric Cloud should not be held liable for any repercussions of using this 
-software.</p>
-</div>
-</body>
-</html>
-
+Electric Cloud should not be held liable for any repercussions of using this 
+software.
