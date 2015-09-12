@@ -181,6 +181,7 @@ emakeAnnoDetail="--emake-annodetail=basic,history,waiting"
 #
 #emakeParseAvoidance="--emake-parse-avoidance=1"
 #emakeJobcache="--emake-jobcache=gcc"
+#emakeAutoDepend="--emake-autodepend=1 --emake-suppress-include=*.d"
 
 # House keeping (e.g. make sure directories exist)
 mkdir -p "$annoDir"
@@ -219,6 +220,7 @@ emake $emakeCM \
       $emakeAssetDir \
       $emakeParseAvoidance \
       $emakeJobcache \
+      $emakeAutoDepend \
       $*
 
 # Execute optional post-build hook
