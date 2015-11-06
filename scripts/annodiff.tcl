@@ -95,12 +95,12 @@ proc diffAnnos {} {
             # anno1 info
             set start1 [$g(anno1) job start $j1]
             set finish1 [$g(anno1) job finish $j1]
-            set duration1 [expr {$finish1 - $start1}]
+            set duration1 [$g(anno1) job length $j1]
 
             # anno2 info
             set start2 [$g(anno2) job start $j2]
             set finish2 [$g(anno2) job finish $j2]
-            set duration2 [expr {$finish2 - $start2}]
+            set duration2 [$g(anno2) job length $j2]
 
             # if match found after at least one mismatch then restore j2
             # to original location of mismatch on next iteration
