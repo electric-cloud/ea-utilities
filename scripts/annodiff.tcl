@@ -45,7 +45,7 @@ package require cmdline
 
 # Command line options
 set parameters {
-	{comparison.arg "all" "Delta comparison: one of all|better|worse; default:"}
+    {comparison.arg "all" "Delta comparison: one of all|better|worse; default:"}
     {delta.arg 60         "Delta to be displayed. 'value' in seconds; default:"}
     {format.arg "short"   "Format output: one of short|long; default:"}
 }
@@ -53,96 +53,96 @@ set parameters {
 # Diff two anno files based on serial order of the first (e.g. anno1)
 proc diffAnnos {} {
     global g opt
-    
-	# set target mismatch flag
-	set mismatch 0
-	
-	# set j2 original location before mismatch flag
-	set j2Save ""
-	set j2Restore 0
 
-	# set initial iterators for anno1/anno2
+    # set target mismatch flag
+    set mismatch 0
+
+    # set j2 original location before mismatch flag
+    set j2Save ""
+    set j2Restore 0
+
+    # set initial iterators for anno1/anno2
     set j1 [$g(anno1) jobs begin]
     set e1 [$g(anno1) jobs end]
     set j2 [$g(anno2) jobs begin]
     set e2 [$g(anno2) jobs end]
 
-	# loop through all jobs
+    # loop through all jobs
     while {$j1 != $e1} {
-	    # move on to next job in anno1 if no match found in anno2
-		if {$j2 == $e2 || $j2Restore == 1} {
-		    # restore j2 to original location of mismatch
-		    set j2 $j2Save
-		    
-			# force move on to next target in anno1 if no match in anno2
-			# otherwise there was a match later on in j2 and j1 was
-			# automatically incremented at the end of the loop
-			if {$j2Restore == 0} {
-			    set j1 [$g(anno1) job next $j1]
-			}
-			
-			# reset j2 restore flag
-			set j2Restore 0
-		}
-		
-	    # get target for anno1/anno2
-		set target1 [$g(anno1) job name $j1]
+        # move on to next job in anno1 if no match found in anno2
+        if {$j2 == $e2 || $j2Restore == 1} {
+            # restore j2 to original location of mismatch
+            set j2 $j2Save
+
+            # force move on to next target in anno1 if no match in anno2
+            # otherwise there was a match later on in j2 and j1 was
+            # automatically incremented at the end of the loop
+            if {$j2Restore == 0} {
+                set j1 [$g(anno1) job next $j1]
+            }
+
+            # reset j2 restore flag
+            set j2Restore 0
+        }
+
+        # get target for anno1/anno2
+        set target1 [$g(anno1) job name $j1]
         set target2 [$g(anno2) job name $j2]
 
-		# see if serial order is the same
-		if {[string equal $target1 $target2]} {
-		    # yes - get additional info
-		    # anno1 info
+        # see if serial order is the same
+        if {[string equal $target1 $target2]} {
+            # yes - get additional info
+            # anno1 info
             set start1 [$g(anno1) job start $j1]
             set finish1 [$g(anno1) job finish $j1]
-		    set duration1 [expr {$finish1 - $start1}]
+            set duration1 [expr {$finish1 - $start1}]
 
-		    # anno2 info
+            # anno2 info
             set start2 [$g(anno2) job start $j2]
             set finish2 [$g(anno2) job finish $j2]
-		    set duration2 [expr {$finish2 - $start2}]
-			
-			# if match found after at least one mismatch then restore j2
-			# to original location of mismatch on next iteration
-			if {$mismatch == 1} {
-				# restore j2 to original location of mismatch
-		        set j2Restore 1
+            set duration2 [expr {$finish2 - $start2}]
+
+            # if match found after at least one mismatch then restore j2
+            # to original location of mismatch on next iteration
+            if {$mismatch == 1} {
+                # restore j2 to original location of mismatch
+                set j2Restore 1
              }
-			 
-			# rest mismatch flag
-			set mismatch 0
-		} else {
-		    # targets don't match; keep searching anno2 for a match
-			if {$mismatch == 0} {
-			    puts ">>>>Targets don't match: <$target1 >$target2"
-				set mismatch 1
-				set j2Save $j2
-			}
-			set j2 [$g(anno2) job next $j2]
-			continue
-		}
-		
-		# delta
-		set delta [expr {$duration2 - $duration1}]
-		set absDelta [expr abs($delta)]
+
+            # rest mismatch flag
+            set mismatch 0
+        } else {
+            # targets don't match; keep searching anno2 for a match
+            if {$mismatch == 0} {
+                puts ">>>>Targets don't match: <$target1 >$target2"
+                set mismatch 1
+                set j2Save $j2
+            }
+            set j2 [$g(anno2) job next $j2]
+            continue
+        }
+
+        # delta
+        set delta [expr {$duration2 - $duration1}]
+        set absDelta [expr abs($delta)]
 
         # display short or long format delta output
         if {([string equal $opt(comparison) "all"]) ||
-		    ([string equal $opt(comparison) "better"] && $delta < 0 && $absDelta > $opt(delta)) ||
-			([string equal $opt(comparison) "worse"] && $delta > 0 && $absDelta > $opt(delta)) } {
-		    if {[string equal $opt(format) "short"]} {
-		        puts "$target1 <$j1 >$j2 <>$delta"
-		    } else {
-		        puts "$target1 <>$delta"
-		        puts "<$j1 Start:$start1 Finish:$finish1 Duration:$duration1"
-		        puts ">$j2 Start:$start2 Finish:$finish2 Duration:$duration2\n"
-		    }
-		}
-		
-		# next job for anno1/anno2
-		set j1 [$g(anno1) job next $j1]
-		set j2 [$g(anno2) job next $j2]
-	}
+            ([string equal $opt(comparison) "better"] && $delta < 0 && $absDelta > $opt(delta)) ||
+            ([string equal $opt(comparison) "worse"] && $delta > 0 && $absDelta > $opt(delta)) } {
+            if {[string equal $opt(format) "short"]} {
+                puts "$target1 <$j1 >$j2 <>$delta"
+            } else {
+                puts "$target1 <>$delta"
+                puts "<$j1 Start:$start1 Finish:$finish1 Duration:$duration1"
+                puts ">$j2 Start:$start2 Finish:$finish2 Duration:$duration2\n"
+            }
+        }
+
+        # next job for anno1/anno2
+        set j1 [$g(anno1) job next $j1]
+        set j2 [$g(anno2) job next $j2]
+    }
 }
 
 # ----------------------------------------------------------------------------
@@ -153,27 +153,27 @@ proc main {} {
 
     # Build up the usage string
     set usage "\[-help\] \[-comparison value\] \[-delta value\] \[-format value\] anno1 anno2\n\n"
-	append usage "options:"
-	
+    append usage "options:"
+
     # Parse command line options
-	if {[catch {array set opt [cmdline::getoptions ::argv $::parameters $usage]}]} {
+    if {[catch {array set opt [cmdline::getoptions ::argv $::parameters $usage]}]} {
         if {$argv != ""} {
-		    puts stderr "Error: $argv is not a valid option\n"
-	    }
+            puts stderr "Error: $argv is not a valid option\n"
+        }
         puts [cmdline::usage $::parameters $usage]
-		exit
+        exit
     }
-	#parray opt	
-		
+    #parray opt
+
     # Whine if we don't have enough arguments
     if {[llength $argv] < 2} {
-	    puts stderr "Error: Missing required anno1/anno2 files"
+        puts stderr "Error: Missing required anno1/anno2 files"
         exit 1
     }
 
     # Required arguments are the annotation files
     set anno1 [lindex $argv 0]
-	set anno2 [lindex $argv 1]
+    set anno2 [lindex $argv 1]
 
     # Open anno1 and parse it
     if {[catch {open $anno1 r} fd]} {
@@ -183,8 +183,8 @@ proc main {} {
     set g(anno1) [anno create]
     fconfigure $fd -translation binary -encoding binary
     $g(anno1) load $fd
-	
-	# Open anno2 and parse it
+
+    # Open anno2 and parse it
     if {[catch {open $anno2 r} fd]} {
         puts stderr "Error: $fd"
         exit 1
@@ -194,10 +194,10 @@ proc main {} {
     $g(anno2) load $fd
 
     # Print duration differences between anno1 and anno2, based on serial
-	# order of anno1
-	puts "<$anno1"
-	puts ">$anno2\n"
-	
+    # order of anno1
+    puts "<$anno1"
+    puts ">$anno2\n"
+
     diffAnnos
 }
 
