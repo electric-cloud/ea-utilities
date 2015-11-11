@@ -65,7 +65,10 @@ set color(3) "remake"
 # Overlay multiple anno files, setting 'type' attribute to a specific category
 # so that an antire build shows up in one color within ElectricInsight 
 proc overlayAnnos {anno counter} {
-    global fd color
+    global fd color g
+
+    # Calculate offset
+    set offset [expr {$g(startTime$counter) - $g(baseline)}]
 
     # loop through all jobs
     set j [$anno jobs begin]
@@ -76,8 +79,12 @@ proc overlayAnnos {anno counter} {
         set completed [$anno job finish $j]
         set node [$anno job agent $j]
 
+        # Compensate for build start time compared to baseline
+        set compInvoked [expr {$invoked + $offset}]
+        set compCompleted [expr {$completed + $offset}]
+
         puts $fd "<job id=\"${j}$counter\" type=\"$color($counter)\">"
-        puts $fd "<timing invoked=\"$invoked\" completed=\"$completed\" node=\"$node\"/>"
+        puts $fd "<timing invoked=\"$compInvoked\" completed=\"$compCompleted\" node=\"$node\"/>"
         puts $fd "</job>"
     }
 }
@@ -97,6 +104,34 @@ proc loadAnno {anno counter} {
     set g(anno$counter) [anno create]
     fconfigure $fd -translation binary -encoding binary
     $g(anno$counter) load $fd
+}
+
+# Get start time of build
+proc getStartTime {anno counter} {
+    global g
+
+    # Look for 'start' attribute of <build> element
+    set pattern {.*start="(.*)"}
+
+    set fid [open $anno r]
+    while {[gets $fid line] != -1} {
+        if { [regexp $pattern $line matched startDatestamp] } { break }
+    }
+    close $fid
+
+    # Now convert datestamp to seconds since epoch
+    # Example: Tue Nov 10 14:22:11 2015
+    set g(startTime$counter) [clock scan $startDatestamp -format "%a %b %d %H:%M:%S %Y"]
+
+    # If baseline is unset (0) then initialize to current value
+    if { $g(baseline) == 0 } {
+        set g(baseline) $g(startTime$counter)
+    }
+
+    # Update baseline if current start time is smaller
+    if { $g(startTime$counter) < $g(baseline) } {
+        set g(baseline) $g(startTime$counter)
+    }
 }
 
 
@@ -127,11 +162,16 @@ proc main {} {
         exit 1
     }
 
-    # Load anno files
+    # Default baseline value 0=unset
+    set g(baseline) 0
+
+    # Load anno files and also get build start time
+    # As a side effect, getStartTime also calculates the time baseline
     set filecount [llength $argv]
     for {set i 0} {$i < $filecount} {incr i} {
         set anno [lindex $argv $i]
         loadAnno $anno $i
+        getStartTime $anno $i
     }
 
     # Open output file
