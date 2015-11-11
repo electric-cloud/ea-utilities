@@ -71,10 +71,7 @@ proc overlayAnnos {anno counter} {
     set j [$anno jobs begin]
     set e [$anno jobs end]
     for {} {$j != $e} {set j [$anno job next $j]} {
-        # get target for anno1/anno2
-        set target1 [$anno job name $j]
-
-        # anno1 info
+        # anno info
         set invoked [$anno job start $j]
         set completed [$anno job finish $j]
         set node [$anno job agent $j]
@@ -87,7 +84,10 @@ proc overlayAnnos {anno counter} {
 
 # Load annotation file
 proc loadAnno {anno counter} {
-    global g
+    global g color
+
+    # Show status
+    puts "Loading anno $anno \[mapping:$color($counter)\]"
 
     # Open anno and parse it
     if {[catch {open $anno r} fd]} {
@@ -144,6 +144,7 @@ proc main {} {
     puts $fd $overlay(header)
 
     # Add overlay job info for each anno file
+    puts "Creating overlay anno file $opt(annofile)"
     for {set i 0} {$i < $filecount} {incr i} {
         overlayAnnos $g(anno$i) $i
     }
