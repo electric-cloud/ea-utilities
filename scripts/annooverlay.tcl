@@ -45,6 +45,7 @@ package require cmdline
 # Command line options
 set parameters {
     {annofile.arg "overlay.anno" "Overlay annotation output file; default:"}
+    {utilization                 "Display unused cluster utilization"}
 }
 
 # Overlay anno xml header/footer
@@ -63,7 +64,7 @@ set color(3) "remake"
 
 
 # Overlay multiple anno files, setting 'type' attribute to a specific category
-# so that an antire build shows up in one color within ElectricInsight 
+# so that an entire build shows up in one color within ElectricInsight 
 proc overlayAnnos {anno counter} {
     global fd color g
 
@@ -83,9 +84,25 @@ proc overlayAnnos {anno counter} {
         set compInvoked [expr {$invoked + $offset}]
         set compCompleted [expr {$completed + $offset}]
 
+        # Add colorized job info to overlay anno output file
         puts $fd "<job id=\"${j}$counter\" type=\"$color($counter)\">"
         puts $fd "<timing invoked=\"$compInvoked\" completed=\"$compCompleted\" node=\"$node\"/>"
         puts $fd "</job>"
+
+        # Update jobDuration and totalDuration counters
+        set g(jobDuration) [expr {$g(jobDuration) + ($completed - $invoked)}]
+        if { $compCompleted > $g(totalDuration) } {
+            set g(totalDuration) $compCompleted
+        }
+
+        # Also update agent count if it's larger
+        # Note: this isn't 100% accurate because the true agent count is a merger
+        #       of all the agents used for every anno file specified; I'm just
+        #       grabbing the largest count out of the bunch
+        set agentCount [llength [$anno agents]]
+        if { $agentCount > $g(totalAgents) } {
+            set g(totalAgents) $agentCount
+        }
     }
 }
 
@@ -165,6 +182,12 @@ proc main {} {
     # Default baseline value 0=unset
     set g(baseline) 0
 
+    # Set defaults for total duration for all annos used in the overlay
+    # as well as duration calculated from adding up all job times
+    set g(totalDuration) 0
+    set g(jobDuration) 0
+    set g(totalAgents) 0
+
     # Load anno files and also get build start time
     # As a side effect, getStartTime also calculates the time baseline
     set filecount [llength $argv]
@@ -194,6 +217,13 @@ proc main {} {
 
     # Close file
     close $fd
+
+    # Display unused cluster utilization percentage
+    if { $opt(utilization) } {
+        set overlayDuration [expr { $g(totalDuration) * $g(totalAgents) }]
+        set unusedUtilization [expr { (($overlayDuration - $g(jobDuration)) / $overlayDuration) * 100 }]
+        puts "Unused cluster utilization = [expr round($unusedUtilization)]\%"
+    }
 }
 
 # execute the main routine
