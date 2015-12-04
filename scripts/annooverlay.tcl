@@ -56,11 +56,15 @@ set overlay(header) "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 set overlay(footer) "</make>
 </build>"
 
-# Set color palette based on job type overload
-set color(0) "parse"
-set color(1) "statcache"
-set color(2) "end"
-set color(3) "remake"
+# Set color palette based on job type and status overloads
+set color(0) "type=\"parse\""
+set color(1) "type=\"statcache\""
+set color(2) "type=\"end\""
+set color(3) "type=\"remake\""
+set color(4) "type=\"rule\""
+set color(5) "type=\"rule\" status=\"conflict\""
+set color(6) "type=\"rule\" status=\"rerun\""
+set color(7) "type=\"rule\" status=\"reverted\""
 
 
 # Overlay multiple anno files, setting 'type' attribute to a specific category
@@ -85,7 +89,7 @@ proc overlayAnnos {anno counter} {
         set compCompleted [expr {$completed + $offset}]
 
         # Add colorized job info to overlay anno output file
-        puts $fd "<job id=\"${j}$counter\" type=\"$color($counter)\" name=\"$g(annoName$counter)\">"
+        puts $fd "<job id=\"${j}$counter\" $color($counter) name=\"$g(annoName$counter)\">"
         puts $fd "<timing invoked=\"$compInvoked\" completed=\"$compCompleted\" node=\"$node\"/>"
         puts $fd "</job>"
 
@@ -174,8 +178,10 @@ proc main {} {
     #parray opt
 
     # Whine if we don't have enough arguments
-    if {[llength $argv] < 1 || [llength $argv] > 4} {
-        puts stderr "Error: can only specify between one and four anno files"
+    # Note: max files accepted is constrained by number of mapping colors available
+    set maxFiles [array size color]
+    if {[llength $argv] < 1 || [llength $argv] > $maxFiles} {
+        puts stderr "Error: can only specify between one and $maxFiles anno files"
         exit 1
     }
 
