@@ -1,6 +1,6 @@
 #!/bin/sh
-# restart -*-Tcl-*- \
-exec tclsh "$0" "$@"
+# the next line restarts using tclsh and supports both linux and cygwin \
+if [ `uname -o` = "Cygwin" ]; then myPath=`cygpath -w "$0"`; else myPath="$0"; fi && exec tclsh "$myPath" "$@"
 
 # annodiff -
 #
