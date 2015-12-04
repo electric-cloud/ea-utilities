@@ -85,7 +85,7 @@ proc overlayAnnos {anno counter} {
         set compCompleted [expr {$completed + $offset}]
 
         # Add colorized job info to overlay anno output file
-        puts $fd "<job id=\"${j}$counter\" type=\"$color($counter)\">"
+        puts $fd "<job id=\"${j}$counter\" type=\"$color($counter)\" name=\"$g(annoName$counter)\">"
         puts $fd "<timing invoked=\"$compInvoked\" completed=\"$compCompleted\" node=\"$node\"/>"
         puts $fd "</job>"
 
@@ -193,6 +193,9 @@ proc main {} {
     set filecount [llength $argv]
     for {set i 0} {$i < $filecount} {incr i} {
         set anno [lindex $argv $i]
+        # also save anno file name so 'overlayAnnos' can set target name
+        # to anno file name for convenient mouse over in ElectricInsight
+        set g(annoName$i) $anno
         loadAnno $anno $i
         getStartTime $anno $i
     }
