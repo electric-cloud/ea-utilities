@@ -1,8 +1,8 @@
 #!/bin/sh
-# restart -*-Tcl-*- \
-exec tclsh "$0" "$@"
+# the next line restarts using tclsh and supports both linux and cygwin \
+if [ `uname -o` = "Cygwin" ]; then myPath=`cygpath -w "$0"`; else myPath="$0"; fi && exec tclsh "$myPath" "$@"
 
-# 'annooverlay' takes as input up to four (4) emake annotation files from 
+# 'annooverlay' takes as input up to eight (8) emake annotation files from 
 # builds that were run in parallel and produces a merged result file with 
 # a single color (category overload) for each build that can be loaded 
 # into ElectricInsight to inspect shared cluster utilization.
@@ -163,8 +163,11 @@ proc getStartTime {anno counter} {
 proc main {} {
     global argv opt g overlay fd color
 
+    # max files accepted is constrained by number of mapping colors available
+    set maxFiles [array size color]
+
     # Build up the usage string
-    set usage "\[-help\] \[-annofile value\] anno1 \[anno2-4\]\n\n"
+    set usage "\[-help\] \[-annofile value\] anno1 \[anno2-$maxFiles\]\n\n"
     append usage "options:"
 
     # Parse command line options
@@ -178,8 +181,6 @@ proc main {} {
     #parray opt
 
     # Whine if we don't have enough arguments
-    # Note: max files accepted is constrained by number of mapping colors available
-    set maxFiles [array size color]
     if {[llength $argv] < 1 || [llength $argv] > $maxFiles} {
         puts stderr "Error: can only specify between one and $maxFiles anno files"
         exit 1
