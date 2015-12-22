@@ -1,9 +1,9 @@
-# eawrapper
+# ea-utilities
 
-eawrapper provides a wrapper script to ElectricAccelerator emake with common flags 
+ea-utilities provides a set of utilities for ElectricAccelerator, including a wrapper script for emake with common flags 
 and methods to manage history/annotation files.
 
-Please visit the [project wiki](https://github.com/electriccommunity/eawrapper/wiki) for details.
+Please visit the [project wiki](https://github.com/electriccommunity/ea-utilities/wiki) for details.
 
 # Disclaimer
  
