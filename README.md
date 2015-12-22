@@ -3,7 +3,7 @@
 ea-utilities provides a set of utilities for ElectricAccelerator, including a wrapper script for emake with common flags 
 and methods to manage history/annotation files.
 
-Please visit the [project wiki](https://github.com/electric-commander/ea-utilities/wiki) for details.
+Please visit the [project wiki](https://github.com/electric-cloud/ea-utilities/wiki) for details.
 
 # Disclaimer
  
