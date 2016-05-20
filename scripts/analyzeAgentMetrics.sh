@@ -61,6 +61,11 @@ function getMetricsCategory () {
    # Truncate result to produce integer for comparison in displayPerfRanking
    result=`grep "$category" $metricsFile | cut -d'(' -f2 | cut -d'.' -f1`
 
+   # Mark incomplete metrics file with special result value of "failed" instead of a number
+   if [ "x$result" == "x" ]; then
+      result="failed"
+   fi
+
    echo $result
 }
 
@@ -80,6 +85,12 @@ function displayPerfRanking () {
    greaterThanLabel=$5
    greaterThanPercent=$6
 
+   # Trap for incomplete metrics file
+   if [ $usagePercent == "failed" ]; then
+      noSpacesName=`echo $categoryName | sed -e "s/ //g"`
+      echo "Error: Category [$noSpacesName] missing from $metricsFile; aborting analysis"
+      exit 1
+   fi
 
    if [ $usagePercent -gt $greaterThanPercent ]; then
       label="$greaterThanLabel"
@@ -88,6 +99,7 @@ function displayPerfRanking () {
    else
       label="Acceptable"
    fi
+
    echo "$categoryName : $label (${usagePercent}%)"
 }
 
@@ -99,6 +111,7 @@ function analyzeOverallTimeUsage () {
    returnPercent=`getMetricsCategory "Return:"`
    idlePercent=`getMetricsCategory "Idle:"`
    endPercent=`getMetricsCategory "End:"`
+
 
    # Display performance rankings
    displayPerfRanking "Command      " $commandPercent Warning 50 Good 60
