@@ -43,11 +43,14 @@ progname=$0
 
 function usage () {
    cat <<EOF
-Usage: $progname [-d dstMetricsSummary] [-h] metricsSummary
+Usage: $progname [-d dstMetricsSummary] [-ahou] metricsSummary
 
 Options:
+   -a                    Specify all analysis options (same as -ou)
    -d dstMetricsSummary  Side by side diff of two agent metrics summary files
    -h                    help
+   -o                    Specify overall time usage performance analysis
+   -u                    Specify usage record performance analysis
 
 EOF
    exit 0
@@ -159,23 +162,43 @@ function sideBySideDiff () {
 ########################################
 
 # Option defaults
+NO_OPT=1 # indicates if no options set
 D_OPT=0
+O_OPT=0
+U_OPT=0
 
 # Parse command line options
-while getopts "d:h" opt; do
+while getopts "ad:hou" opt; do
    case $opt in
 
+   a) D_OPT=1
+      O_OPT=1
+      U_OPT=1
+      NO_OPT=0
+      ;;
    d) dstMetricsFile="$OPTARG"
       D_OPT=1
+      NO_OPT=0
       ;;
    h) usage
       exit 0
+      ;;
+   o) O_OPT=1
+      NO_OPT=0
+      ;;
+   u) U_OPT=1
+      NO_OPT=0
       ;;
   \?) echo "Invalid option: -$OPTARG"
       exit 1
       ;;
    esac
 done
+
+# Default to overall time usage performance
+if [ $NO_OPT -eq 1 ]; then
+   O_OPT=1
+fi
 
 # Everything else is make option related
 shift $(($OPTIND - 1))
@@ -196,10 +219,14 @@ if [ $D_OPT -eq 1 -a "x$dstMetricsFile" == "x" ] ; then
 fi
 
 # Overall time usage performance
-analyzeOverallTimeUsage
+if [ $O_OPT -eq 1 ]; then
+   analyzeOverallTimeUsage
+fi
 
 # Usage records performance
-analyzeUsageRecords
+if [ $U_OPT -eq 1 ]; then
+   analyzeUsageRecords
+fi
 
 # Display side by side diff of specified metrics files
 if [ $D_OPT -eq 1 ]; then
