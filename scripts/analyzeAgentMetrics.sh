@@ -136,11 +136,31 @@ function analyzeUsageRecords () {
    displayPerfRanking "Create       " $create Good 2 Warning 10
 }
 
+# Show side by side diff
+function sideBySideDiff () {
+   echo "Side by Side Diff"
+   echo "================="
+   echo
+   diff -y -W 160 $metricsFile $dstMetricsFile
+}
+
+
+########################################
+###                                  ###
+###         Main Entry Point         ###
+###                                  ###
+########################################
+
+# Option defaults
+D_OPT=0
 
 # Parse command line options
-while getopts "h" opt; do
+while getopts "d:h" opt; do
    case $opt in
 
+   d) dstMetricsFile="$OPTARG"
+      D_OPT=1
+      ;;
    h) usage
       exit 0
       ;;
@@ -157,8 +177,14 @@ shift $(($OPTIND - 1))
 metricsFile=$*
 
 # Make sure user has specified a metrics summary file
-if [ "x$metricsFile" = "x" ] ; then
-    echo "Must specify an agent metrics summary file using agentMetrics.sh" 
+if [ "x$metricsFile" == "x" ] ; then
+    echo "Error: Must specify an agent metrics summary file using agentMetrics.sh" 
+    exit 1
+fi
+
+# If -d option specified, make sure user has specified a destination metrics summary file for diffing
+if [ $D_OPT -eq 1 -a "x$dstMetricsFile" == "x" ] ; then
+    echo "Error: Must specify a second agent metrics summary file when specifying -d option" 
     exit 1
 fi
 
@@ -173,3 +199,8 @@ echo "Usage Records Performance"
 echo "========================="
 analyzeUsageRecords
 echo
+
+# Display side by side diff of specified metrics files
+if [ $D_OPT -eq 1 ]; then
+   sideBySideDiff 
+fi
