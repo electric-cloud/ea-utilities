@@ -43,9 +43,10 @@ progname=$0
 
 function usage () {
    cat <<EOF
-Usage: $progname [-h] metricsSummary
+Usage: $progname [-d dstMetricsSummary] [-h] metricsSummary
 
 Options:
+   -d      Side by side diff of two agent metrics summary files
    -h      help
 
 EOF
