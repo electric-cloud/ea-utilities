@@ -171,8 +171,7 @@ U_OPT=0
 while getopts "ad:hou" opt; do
    case $opt in
 
-   a) D_OPT=1
-      O_OPT=1
+   a) O_OPT=1
       U_OPT=1
       NO_OPT=0
       ;;
@@ -204,7 +203,7 @@ fi
 shift $(($OPTIND - 1))
 
 # Get metrics summary file
-metricsFile=$*
+metricsFile=$1
 
 # Make sure user has specified a metrics summary file
 if [ "x$metricsFile" == "x" ] ; then
