@@ -46,8 +46,8 @@ function usage () {
 Usage: $progname [-d dstMetricsSummary] [-h] metricsSummary
 
 Options:
-   -d      Side by side diff of two agent metrics summary files
-   -h      help
+   -d dstMetricsSummary  Side by side diff of two agent metrics summary files
+   -h                    help
 
 EOF
    exit 0
