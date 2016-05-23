@@ -114,11 +114,14 @@ function analyzeOverallTimeUsage () {
 
 
    # Display performance rankings
+   echo "Overall Time Usage Performance"
+   echo "=============================="
    displayPerfRanking "Command      " $commandPercent Warning 50 Good 60
    displayPerfRanking "Emake Request" $emakeRequestPercent Good 10 Warning 15
    displayPerfRanking "Return       " $returnPercent Good 10 Warning 20
    displayPerfRanking "Idle         " $idlePercent Good 10 Warning 20
    displayPerfRanking "End          " $endPercent Good 10 Warning 20
+   echo
 }
 
 # Get usage record categories and display analysis
@@ -130,10 +133,13 @@ function analyzeUsageRecords () {
    create=`getMetricsCategory "Create  "`
 
    # Display performance rankings
+   echo "Usage Records Performance"
+   echo "========================="
    displayPerfRanking "Failed Lookup" $failedLookup Good 50 Warning 60
    displayPerfRanking "Read         " $read Good 25 Warning 30
    displayPerfRanking "Lookup       " $lookup Good 10 Warning 15
    displayPerfRanking "Create       " $create Good 2 Warning 10
+   echo
 }
 
 # Show side by side diff
@@ -189,16 +195,10 @@ if [ $D_OPT -eq 1 -a "x$dstMetricsFile" == "x" ] ; then
 fi
 
 # Overall time usage performance
-echo "Overall Time Usage Performance"
-echo "=============================="
 analyzeOverallTimeUsage
-echo
 
 # Usage records performance
-echo "Usage Records Performance"
-echo "========================="
 analyzeUsageRecords
-echo
 
 # Display side by side diff of specified metrics files
 if [ $D_OPT -eq 1 ]; then
