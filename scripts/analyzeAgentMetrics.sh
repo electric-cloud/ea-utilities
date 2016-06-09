@@ -13,7 +13,7 @@
 # experience using ElectricAccelerator. Share your enhancements and fixes.
 #
 #
-# Copyright (c) 2015 Ken McKnight
+# Copyright (c) 2016 Ken McKnight
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -112,6 +112,7 @@ function calcPercentChange () {
 # $5 - less than value
 # $6 - greater than label
 # $7 - greater than value
+# $8 - actual value(s)
 function displayPerfRanking () {
    categoryName=$1
    categoryValue=$2
@@ -120,6 +121,7 @@ function displayPerfRanking () {
    lessThanValue=$5
    greaterThanLabel=$6
    greaterThanValue=$7
+   actualValue=$8
 
    # Trap for incomplete metrics file
    if [ $categoryValue == "failed" ]; then
@@ -136,7 +138,7 @@ function displayPerfRanking () {
       label="Acceptable"
    fi
 
-   echo "$categoryName : $label (${categoryValue}$categoryUnits)"
+   echo "$categoryName : $label (${categoryValue}$categoryUnits$actualValue)"
 }
 
 # Get percent usage for overall time categories and display analysis
@@ -218,10 +220,10 @@ function analyzeUsageRecords () {
    else
       echo "Usage Records Performance Percentage Change"
       echo "==========================================="
-      displayPerfRanking "Failed Lookup" $failedLookupPC "%" Good 10 Warning 25
-      displayPerfRanking "Read         " $readPC "%" Good 10 Warning 25
-      displayPerfRanking "Lookup       " $lookupPC "%" Good 10 Warning 25
-      displayPerfRanking "Create       " $createPC "%" Good 10 Warning 25
+      displayPerfRanking "Failed Lookup" $failedLookupPC "%" Good 10 Warning 25 " | ${failedLookup2}% - ${failedLookup}%"
+      displayPerfRanking "Read         " $readPC "%" Good 10 Warning 25 " | ${read2}% - ${read}%"
+      displayPerfRanking "Lookup       " $lookupPC "%" Good 10 Warning 25 " | ${lookup2}% - ${lookup}%"
+      displayPerfRanking "Create       " $createPC "%" Good 10 Warning 25 " | ${create2}% - ${create}%"
       echo
    fi
 }
@@ -293,12 +295,12 @@ function analyzeBandwidth() {
    else
       echo "Bandwidth Performance Percentage Change"
       echo "======================================="
-      displayPerfRanking "Network from emake " $netFromEmakePC "%" Good 10 Warning 25
-      displayPerfRanking "Network to emake   " $netToEmakePC "%" Good 10 Warning 25
-      displayPerfRanking "Network from agents" $netFromAgentsPC "%" Good 10 Warning 25
-      displayPerfRanking "Network to agents  " $netToAgentsPC "%" Good 10 Warning 25
-      displayPerfRanking "EFS disk reads     " $efsDiskReadsPC "%" Good 10 Warning 25
-      displayPerfRanking "EFS disk writes    " $efsDiskWritesPC "%" Good 10 Warning 25
+      displayPerfRanking "Network from emake " $netFromEmakePC "%" Good 10 Warning 25 " | ${netFromEmake2}MB/s - ${netFromEmake}MB/s"
+      displayPerfRanking "Network to emake   " $netToEmakePC "%" Good 10 Warning 25 " | ${netToEmake2}MB/s - ${netToEmake}MB/s"
+      displayPerfRanking "Network from agents" $netFromAgentsPC "%" Good 10 Warning 25 " | ${netFromAgents2}MB/s - ${netFromAgents}MB/s"
+      displayPerfRanking "Network to agents  " $netToAgentsPC "%" Good 10 Warning 25 " | ${netToAgents2}MB/s - ${netToAgents}MB/s"
+      displayPerfRanking "EFS disk reads     " $efsDiskReadsPC "%" Good 10 Warning 25 " | ${efsDiskReads2}MB/s - ${efsDiskReads}MB/s"
+      displayPerfRanking "EFS disk writes    " $efsDiskWritesPC "%" Good 10 Warning 25 " | ${efsDiskWrites2}MB/s - ${efsDiskWrites}MB/s"
       echo
    fi
 }
