@@ -85,16 +85,8 @@ function calcPercentChange () {
    categoryTime1=$1
    categoryTime2=$2
 
-   if [ $categoryTime1 -gt $categoryTime2 ]; then
-      time2=$categoryTime1
-      time1=$categoryTime2
-   else
-      time1=$categoryTime1
-      time2=$categoryTime2
-   fi
-
-   if [ $time2 -gt 0 ]; then
-      pc=$(( ((((time2 - time1) * 1000) / time2) + (time2 > time1 ? 5 : -5)) / 10 ))
+   if [ $categoryTime1 -gt 0 ]; then
+      pc=$((((categoryTime2 * 1000) / categoryTime1) / 10))
    else
       # Handle corner case of both times are zero
       pc=0
@@ -220,10 +212,10 @@ function analyzeUsageRecords () {
    else
       echo "Usage Records Performance Percentage Change"
       echo "==========================================="
-      displayPerfRanking "Failed Lookup" $failedLookupPC "%" Good 10 Warning 25 " | ${failedLookup2}% - ${failedLookup}%"
-      displayPerfRanking "Read         " $readPC "%" Good 10 Warning 25 " | ${read2}% - ${read}%"
-      displayPerfRanking "Lookup       " $lookupPC "%" Good 10 Warning 25 " | ${lookup2}% - ${lookup}%"
-      displayPerfRanking "Create       " $createPC "%" Good 10 Warning 25 " | ${create2}% - ${create}%"
+      displayPerfRanking "Failed Lookup" $failedLookupPC "%" Good 100 Warning 75 " | ${failedLookup}% -> ${failedLookup2}%"
+      displayPerfRanking "Read         " $readPC "%" Good 100 Warning 75 " | ${read}% -> ${read2}%"
+      displayPerfRanking "Lookup       " $lookupPC "%" Good 100 Warning 75 " | ${lookup}% -> ${lookup2}%"
+      displayPerfRanking "Create       " $createPC "%" Good 100 Warning 75 " | ${create}% -> ${create2}%"
       echo
    fi
 }
@@ -295,12 +287,12 @@ function analyzeBandwidth() {
    else
       echo "Bandwidth Performance Percentage Change"
       echo "======================================="
-      displayPerfRanking "Network from emake " $netFromEmakePC "%" Good 10 Warning 25 " | ${netFromEmake2}MB/s - ${netFromEmake}MB/s"
-      displayPerfRanking "Network to emake   " $netToEmakePC "%" Good 10 Warning 25 " | ${netToEmake2}MB/s - ${netToEmake}MB/s"
-      displayPerfRanking "Network from agents" $netFromAgentsPC "%" Good 10 Warning 25 " | ${netFromAgents2}MB/s - ${netFromAgents}MB/s"
-      displayPerfRanking "Network to agents  " $netToAgentsPC "%" Good 10 Warning 25 " | ${netToAgents2}MB/s - ${netToAgents}MB/s"
-      displayPerfRanking "EFS disk reads     " $efsDiskReadsPC "%" Good 10 Warning 25 " | ${efsDiskReads2}MB/s - ${efsDiskReads}MB/s"
-      displayPerfRanking "EFS disk writes    " $efsDiskWritesPC "%" Good 10 Warning 25 " | ${efsDiskWrites2}MB/s - ${efsDiskWrites}MB/s"
+      displayPerfRanking "Network from emake " $netFromEmakePC "%" Warning 75 Good 100 " | ${netFromEmake}MB/s -> ${netFromEmake2}MB/s"
+      displayPerfRanking "Network to emake   " $netToEmakePC "%" Warning 75 Good 100 " | ${netToEmake}MB/s -> ${netToEmake2}MB/s"
+      displayPerfRanking "Network from agents" $netFromAgentsPC "%" Warning 75 Good 100 " | ${netFromAgents}MB/s -> ${netFromAgents2}MB/s"
+      displayPerfRanking "Network to agents  " $netToAgentsPC "%" Warning 75 Good 100 " | ${netToAgents}MB/s -> ${netToAgents2}MB/s"
+      displayPerfRanking "EFS disk reads     " $efsDiskReadsPC "%" Warning 75 Good 100 " | ${efsDiskReads}MB/s -> ${efsDiskReads2}MB/s"
+      displayPerfRanking "EFS disk writes    " $efsDiskWritesPC "%" Warning 75 Good 100 " | ${efsDiskWrites}MB/s -> ${efsDiskWrites2}MB/s"
       echo
    fi
 }
@@ -375,6 +367,17 @@ metricsFile=$1
 # Make sure user has specified a metrics summary file
 if [ "x$metricsFile" == "x" ] ; then
     echo "Error: Must specify an agent metrics summary file using agentMetrics.sh" 
+    exit 1
+fi
+# And that it exists
+if [ ! -f "$metricsFile" ] ; then
+    echo "Error: Metrics file '$metricsFile' does not exist" 
+    exit 1
+fi
+
+# If second file option specified, make sure that it exists
+if [ $F_OPT -eq 1 -a ! -f "$metricsFile2" ] ; then
+    echo "Error: -f option metrics file '$metricsFile2' does not exist" 
     exit 1
 fi
 
