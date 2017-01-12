@@ -69,7 +69,7 @@ Options:
    -r      reset history (aka no-history build - history file backed up)
 
 If specifying a make option then it must be preceded by '--'. For example:
-$progname -a -- -f verify.mk all
+$progname -r -- -f ../makefiles/verify.mk all
 
 EOF
    exit 0
@@ -110,6 +110,7 @@ shift $(($OPTIND - 1))
 if [ "x$cmHost" = "x" ] ; then
     echo "'cmHost' must be set to the hostname or IP address of your "
     echo "ElectricAccelerator Cluster Manager."
+    echo "Edit $progname to set this variable" 
     exit 1
 fi
 
@@ -117,6 +118,7 @@ fi
 
 if [ "x$projectName" = "x" ] ; then
     echo "'projectName' must be set to the name of your project."
+    echo "Edit $progname to set this variable" 
     exit 1
 fi
 
@@ -132,6 +134,7 @@ fi
 if [ "x$emakeOutputDir" = "x" ] ; then
     echo "'emakeOutputDir' must be set to a writable directory with enough"
     echo "free space for Electric Make annotation, history and debug logs."
+    echo "Edit $progname to set this variable" 
     exit 1
 fi
 
