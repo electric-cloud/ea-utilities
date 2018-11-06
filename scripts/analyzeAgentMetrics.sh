@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Provide guidance on agent metrics summary based on Eric Melski blogs
 # http://electric-cloud.com/blog/2008/10/digging-into-accelerator-agent-metrics-part-1/
