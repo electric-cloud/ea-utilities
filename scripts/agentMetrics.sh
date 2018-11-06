@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # This script is intended to automate the generation of agent side metrics
 # Usage is:
